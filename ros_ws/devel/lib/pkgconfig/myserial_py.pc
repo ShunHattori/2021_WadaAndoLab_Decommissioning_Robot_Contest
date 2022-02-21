@@ -1,0 +1,8 @@
+prefix=/home/shun/ros_ws/devel
+
+Name: myserial_py
+Description: Description of myserial_py
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: rospy std_msgs

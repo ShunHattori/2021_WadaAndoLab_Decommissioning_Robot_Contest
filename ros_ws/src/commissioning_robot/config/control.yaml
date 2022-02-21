@@ -1,0 +1,64 @@
+commissioning_robot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 1000 
+
+  # Position Controllers ---------------------------------------
+  # robot_position_controller:
+  #   pid: {p: 1500.0, i: 10.0, d: 100.0}
+  #   type: position_controllers/JointPositionController
+  #   joint: drive_base_joint
+  #   publish_rate: 1000 
+  lift1_position_controller:
+    type: position_controllers/JointPositionController
+    joint: lift1_link_joint
+    publish_rate: 1000 
+  lift2_position_controller:
+    type: position_controllers/JointPositionController
+    joint: lift2_link_joint
+    publish_rate: 1000 
+  lift3_position_controller:
+    type: position_controllers/JointPositionController
+    joint: lift3_link_joint
+    publish_rate: 1000 
+  lift4_position_controller:
+    type: position_controllers/JointPositionController
+    joint: lift4_link_joint
+    publish_rate: 1000 
+  wheel1_position_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum1_link_joint
+    publish_rate: 1000 
+  wheel2_position_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum2_link_joint
+    publish_rate: 1000 
+  wheel3_position_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum3_link_joint
+    publish_rate: 1000 
+  wheel4_position_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum4_link_joint
+    publish_rate: 1000 
+  bottom_unit_link_position_controller:
+    type: position_controllers/JointPositionController
+    joint: bottom_unit_link_joint
+    publish_rate: 1000 
+  second_unit_link_position_controller:
+    type: position_controllers/JointPositionController
+    joint: second_unit_link_joint
+    publish_rate: 1000 
+  third_unit_link_position_controller:
+    type: position_controllers/JointPositionController
+    joint: third_unit_link_joint
+    publish_rate: 1000 
+  top_unit_link_position_controller:
+    type: position_controllers/JointPositionController
+    joint: top_unit_link_joint
+    publish_rate: 1000 

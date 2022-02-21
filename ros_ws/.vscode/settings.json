@@ -1,0 +1,14 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/opt/ros/noetic/lib/python2.7/dist-packages"
+    ],
+    "files.associations": {
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "cmath": "cpp"
+    },
+    "python.analysis.extraPaths": [
+        "/opt/ros/noetic/lib/python2.7/dist-packages"
+    ],
+    "python.formatting.provider": "black"
+}

@@ -1,0 +1,110 @@
+<!-- http://wiki.ros.org/xacro -->
+<robot name="commissioning_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find commissioning_robot)/xacro/mechanum_macro_ver5_h.xacro" />
+  <xacro:property name="PI" value="3.1415926535897931" />
+  <xacro:property name="wheel_joint_x" value="0.0495" />
+  <xacro:property name="wheel_joint_y" value="0.0500" />
+  <xacro:property name="wheel_joint_z" value="0.0720" />
+
+<!-- definition of links -->
+  <link name="base_link"/>
+
+  <link name="head_link">
+    <visual>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 ${0}"/>
+      <material name="blue"/>
+    </visual>
+    <inertial>
+      <origin xyz="${wheel_joint_x} ${wheel_joint_y} -${wheel_joint_z}" rpy="0 0 0"/>
+      <mass value="${2.2831430e-01}"/>
+    <inertia ixx="${1.3964271e-4}" ixy="-2.4376656e-7" ixz="${-4.0742095e-8}"
+       iyx="${-2.4376656e-7}" iyy="${1.4237359e-4}" iyz="${1.5005847e-8}"
+       izx="${-4.0742095e-8}" izy="${1.5005847e-8}" izz="${1.4228689e-4}" />    
+    </inertial>
+  </link>
+    
+  <joint name="head_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="head_link"/>
+    <origin xyz="0 0 0.3" rpy="0 0 0"/>
+  </joint>
+
+<!-- 
+    <link name="mechanum1_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://commissioning_robot/stl_ver5/ots-barrel-display_s.stl"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 ${0}"/>
+        <material name="blue"/>
+      </visual>
+      <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${2.0168905}"/>
+        <inertia ixx="${9.1158740e-7}" ixy="${0.0e-00}" ixz="${0.0e-00}"
+         iyx="${0.0e-00}" iyy="${3.5976895e-6}" iyz="${0.0e-00}"
+         izx="${0.0e-00}" izy="${0.0e-00}" izz="${3.5976895e-6}" />      
+      </inertial>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 ${0}"/>
+        <geometry>
+          <mesh filename="package://commissioning_robot/stl_ver5/ots-barrel-display_s.stl" />
+        </geometry>
+      </collision>
+    </link>
+    <gazebo reference="mechanum1_link">
+      <material>Gazebo/Red</material>
+      <mu1>0.2</mu1>
+      <mu2>0.2</mu2>
+    </gazebo>
+
+    <joint name="mechanum1_link_joint" type="continuous">
+      <parent link="head_link"/>
+      <child  link="mechanum1_link"/>
+      <origin xyz="0 ${0.04029*cos(0*PI/180.0)} ${0.04029*sin(0*PI/180.0)}" rpy="${0*PI/180.0} ${-PI/4.0*cos(0*PI/180.0)} ${-PI/4.0*sin(0*PI/180.0)}"/>
+      <axis xyz="1 0 0"/>
+      <dynamics damping="0.00007"/>
+    </joint>
+    <transmission name="mechanum1_link_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="mechanum1_link_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="mechanum1_link_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission> -->
+
+
+
+
+
+
+  <xacro:generate_right_mechanum suffix="mechanum1_link" />
+  <!-- <xacro:generate_left_mechanum suffix="mechanum2_link" /> -->
+  <!-- <xacro:generate_right_mechanum suffix="mechanum3_link" /> -->
+  <!-- <xacro:generate_left_mechanum suffix="mechanum4_link" /> -->
+
+<!-- definition of joints -->
+  <!-- robot base Joints -->
+
+  <!-- Wheel Joints -->
+  <!-- Dist between each lift_joint and wheel_joint -->
+  <xacro:generate_wheel_joint suffix="mechanum1_link" parent="head_link" x=" ${wheel_joint_x}" y=" ${wheel_joint_y}" z="-${wheel_joint_z}" />
+  <!-- <xacro:generate_wheel_joint suffix="mechanum2_link" parent="base_link" x="-${wheel_joint_x}" y=" ${wheel_joint_y}" z="-${wheel_joint_z}" /> -->
+  <!-- <xacro:generate_wheel_joint suffix="mechanum3_link" parent="base_link" x="-${wheel_joint_x}" y="-${wheel_joint_y}" z="-${wheel_joint_z}" /> -->
+  <!-- <xacro:generate_wheel_joint suffix="mechanum4_link" parent="base_link" x=" ${wheel_joint_x}" y="-${wheel_joint_y}" z="-${wheel_joint_z}" /> -->
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/commissioning_robot</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+      <legacyModeNS>true</legacyModeNS>
+    </plugin>
+  </gazebo>
+
+</robot>

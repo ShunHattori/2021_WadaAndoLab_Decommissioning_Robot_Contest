@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="room1">
+  <static>true</static>
+  <pose>0 0 0 0 0 0</pose>
+    <link name="link">
+      <inertial>
+        <mass>1.0</mass>
+        <inertia>
+          <ixx>0.083</ixx>
+          <ixy>0.0</ixy>
+          <ixz>0.0</ixz>
+          <iyy>0.083</iyy>
+          <iyz>0.0</iyz>
+          <izz>0.083</izz>
+        </inertia>
+      </inertial>
+      <collision name="collision">
+        <geometry>
+          <mesh>
+            <uri>model://room1/asm_field.stl</uri>
+            <!-- <box> size="5 5 0.05 " </box> -->
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <!-- <ambient>1 0 0 1</ambient>
+        <diffuse>1 0 0 1</diffuse>
+        <specular>0.1 0.1 0.1 1</specular>
+        <emissive>0 0 0 0</emissive> -->
+        <geometry>
+          <mesh>
+            <uri>model://room1/asm_field.stl</uri>
+            <!-- <box> size="5 5 0.05 " </box> -->
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

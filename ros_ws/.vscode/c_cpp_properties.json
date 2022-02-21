@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/opt/ros/noetic/include/**",
+                "/usr/include/**",
+                "${workspaceFolder}/src/commissioning_robot/include",
+                "${workspaceFolder}/devel/include"
+            ],
+            "name": "ROS"
+        }
+    ],
+    "version": 4
+}

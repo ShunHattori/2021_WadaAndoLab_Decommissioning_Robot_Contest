@@ -1,0 +1,8 @@
+xprintf.c:156:6:xputc	16	static
+xprintf.c:164:6:xfputc	16	static
+xprintf.c:184:6:xputs	16	static
+xprintf.c:192:6:xfputs	16	static
+xprintf.c:229:13:xvfprintf	104	static
+xprintf.c:364:6:xprintf	16	static
+xprintf.c:378:6:xfprintf	28	static
+xprintf.c:393:6:xsprintf	28	static

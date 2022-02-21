@@ -1,0 +1,32 @@
+<!-- 
+    How to include this header files.
+    Replace package name of find command.
+    
+    <xacro:include filename="$(find commissioning_robot)/xacro/color_preset_h.xacro" />
+ -->
+
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- <material name="red">
+    <color rgba="1.0 0.0 0.0 1"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 1.0 0.0 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="0.0 0.0 1.0 1"/>
+  </material> -->
+
+  <material name="red">
+    <color rgba="0.9 1 1 1"/>
+  </material>
+  <material name="green">
+    <color rgba="1 0.9 1 1"/>
+  </material>
+  <material name="blue">
+    <color rgba="1 1 0.9 1"/>
+  </material>
+</robot>
+
+
+  

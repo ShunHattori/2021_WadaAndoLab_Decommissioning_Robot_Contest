@@ -1,0 +1,2 @@
+commissioning_robot:ds4_driver:myserial_py
+-DCATKIN_DEVEL_PREFIX=/home/shun/ros_ws/devel -DCMAKE_INSTALL_PREFIX=/home/shun/ros_ws/install -G Unix Makefiles

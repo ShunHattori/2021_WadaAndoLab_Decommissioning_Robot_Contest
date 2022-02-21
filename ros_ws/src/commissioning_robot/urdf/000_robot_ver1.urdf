@@ -1,0 +1,92 @@
+<robot name="commissioning_robot">
+  
+  <material name="red">
+    <color rgba="1.0 0.0 0.0 0.95"/>
+  </material>
+  <material name="green">
+    <color rgba="0.0 1.0 0.0 0.95"/>
+  </material>
+
+  <link name="base_link"/>
+
+  <link name="base_frame_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://commissioning_robot/stl/display-base-frame.stl" />
+      </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <material name="red">
+      </material>
+    </visual>
+  </link>
+
+
+  <link name="wheel1_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://commissioning_robot/stl/display-mechanum.stl" />
+      </geometry>
+        <origin xyz="-0.025 0 0" rpy="0 0 0"/>
+        <material name="green">
+      </material>
+    </visual>
+  </link>
+  <link name="wheel2_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://commissioning_robot/stl/display-mechanum.stl" />
+      </geometry>
+        <origin xyz="-0.025 0 0" rpy="0 0 0"/>
+        <material name="green">
+        </material>
+    </visual>
+  </link>
+  <link name="wheel3_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://commissioning_robot/stl/display-mechanum.stl" />
+      </geometry>
+        <origin xyz="-0.025 0 0" rpy="0 0 0"/>
+        <material name="green">
+        </material>
+    </visual>
+  </link>
+  <link name="wheel4_link">
+    <visual>
+      <geometry>
+        <mesh filename="package://commissioning_robot/stl/display-mechanum.stl" />
+      </geometry>
+        <origin xyz="-0.025 0 0" rpy="0 0 0"/>
+        <material name="green">
+        </material>
+    </visual>
+  </link>
+
+  <joint name="base_frame_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="base_frame_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="wheel1_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="wheel1_link"/>
+    <origin xyz="0.229 0.2575 0" rpy="0 0 0"/>
+  </joint>
+  <joint name="wheel2_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="wheel2_link"/>
+    <origin xyz="-0.229 0.2575 0" rpy="0 0 0"/>
+  </joint>
+  <joint name="wheel3_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="wheel3_link"/> 
+    <origin xyz="-0.229 -0.2575 0" rpy="0 0 0"/>
+  </joint>
+  <joint name="wheel4_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="wheel4_link"/>
+    <origin xyz="0.229 -0.2575 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>

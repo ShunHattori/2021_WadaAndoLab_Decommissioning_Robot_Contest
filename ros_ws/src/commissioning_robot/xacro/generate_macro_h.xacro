@@ -1,0 +1,338 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+<!-- 
+  設計方針としてSTLメッシュに対してリンクの原点系は変更しない
+  ジョイントの原点位置を変更することでモデルの位置を調整する
+  こうすることによってCAD上のジオメトリで定義されているデータムと簡単に整合性を取ることができる
+  →無数にある全体アセンブリのデータムからパーツ間距離計測が容易にできる
+ -->
+
+<!-- 
+  GAZEBOで使用する物理パラメータユニットを挿入する
+  設定できる項目は以下の通り
+  ・mu1,mu2:接地面に沿った接地摩擦係数
+  ・kp:剛体面の接触剛性
+  ・kd:剛体面の摩擦減衰
+  ・dampingFactor:リンク速度の指数関数的減衰
+  http://wiki.ros.org/simulator_gazebo/Tutorials/ListOfMaterials
+  http://cir-kit.github.io/blog/2015/02/17/gazebo-urdf-in-gazebo/
+ -->
+  <xacro:macro name="INSERT_GAZEBO_PHYSICS_UNIT" params="suffix mu1 mu2 kp kd df color">
+    <gazebo reference="${suffix}">
+      <material>${color}</material>
+      <!-- https://github.com/ipa-nhg/universal_robot/blob/b9c527bb0cd8a51bef753c4658fd004b1812cf85/ur_description/meshes/ur10/visual/base.dae -->
+      <!-- https://community.arm.com/developer/research/b/articles/posts/do-you-want-to-build-a-robot -->
+      <!-- <material>
+        <ambient>0.25 0.25 0.25 1</ambient>
+        <diffuse>0.3137255 0.4341961 0.512 1</diffuse>
+        <specular>0.25 0.25 0.25 1</specular>
+        <emissive>0.25 0.25 0.25 1</emissive>
+      </material> -->
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <kp>${kp}</kp>
+      <kd>${kd}</kd>
+      <dampingFactor>${df}</dampingFactor>
+      <!-- <minDepth>0.001</minDepth> -->
+      <!-- <maxVel>0.01</maxVel> -->
+      <!-- <turnGravityOff>true</turnGravityOff> -->
+    </gazebo>
+  </xacro:macro> 
+
+<!-- 
+  慣性テンソル・GAZEBO物理パラメータを持ったリンクオブジェクトを生成する
+  パラメータの説明は以下の通り
+  ・suffix:生成されるリンク名（命名規則として○○○_linkをつける）
+  ・roll:ロール姿勢を設定（RAD）
+  ・yaw:ヨー姿勢を設定（RAD）
+  ・color:color_preset_hで定義された色名を指定
+  ・stl:STLファイルのパスを指定（相対パス取得はpackage://commissioning_robot/~~~）
+  ・**inertial:慣性テンソルユニットを設定（原点・質量・イナーシャの三項目）
+  ・**physics:INSERT_GAZEBO_PHYSICS_UNITマクロを使用できる（剛性や摩擦減衰などを指定）
+ -->
+  <xacro:macro name="generate_link" params="suffix roll yaw color stl **inertial **physics">
+    <link name="${suffix}">
+      <visual>
+        <geometry>
+          <mesh filename="${stl}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="${roll} 0 ${yaw}"/>
+        <material name="${color}"/>
+      </visual>
+      <inertial>
+        <xacro:insert_block name="inertial"/>
+      </inertial>
+      <collision>
+        <origin xyz="0 0 0" rpy="${roll} 0 ${yaw}"/>
+        <geometry>
+          <mesh filename="${stl}" />
+        </geometry>
+      </collision>
+    </link>
+    <xacro:insert_block name="physics"/>
+  </xacro:macro> 
+
+<!-- 
+  慣性テンソル・GAZEBO物理パラメータを持ったリンクオブジェクトを生成する（衝突判定なし）
+  パラメータはgenerate_linkと同様
+ -->
+  <xacro:macro name="generate_link_non_collision" params="suffix roll yaw color stl **inertial **physics">
+    <link name="${suffix}">
+      <visual>
+        <geometry>
+          <mesh filename="${stl}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="${roll} 0 ${yaw}"/>
+        <material name="${color}"/>
+      </visual>
+      <inertial>
+        <xacro:insert_block name="inertial"/>
+      </inertial>
+      <collision>
+        <origin xyz="0 0 0" rpy="${roll} 0 ${yaw}"/>
+        <geometry>
+          <box size="0 0 0" />
+        </geometry>
+      </collision>
+    </link>
+    <xacro:insert_block name="physics"/>
+  </xacro:macro> 
+
+<!-- 
+  単純なリンクオブジェクトを生成する
+  主にSTL確認用（RVIZ)に使用できる
+ -->
+  <xacro:macro name="generate_simple_link" params="suffix yaw color stl">
+    <link name="${suffix}">
+      <visual>
+        <geometry>
+          <mesh filename="${stl}"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 ${yaw}"/>
+        <material name="${color}"/>
+      </visual>
+    </link>
+  </xacro:macro> 
+
+<!-- 
+  メカナムの回転ジョイントを設定するマクロ
+　現在エフォートと速度は無制限に設定されていて
+  機械的な限界を計算して適応させる必要あり
+ -->
+  <xacro:macro name="generate_mechanum_joint" params="suffix parent x y z">
+    <joint name="${suffix}_joint" type="continuous">
+      <parent link="${parent}"/>
+      <child  link="${suffix}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="10000" velocity="1000" />
+      <dynamics damping="0.01"/>
+    </joint>
+    <xacro:INSERT_TRANSMISSION_UNIT_VELOCITY suffix="${suffix}" />
+  </xacro:macro> 
+
+<!-- 
+  上昇機構全般の並進ジョイントを設定するマクロ
+　現在エフォートと速度は無制限に設定されていて
+  機械的な限界を計算して適応させる必要あり
+  特徴的なパラメータは自由度が存在するの軸設定（free_axis）
+  free_axis="x" でX軸に平行にジョイントが並進可能になる。
+ -->
+  <xacro:macro name="generate_lift_joint" params="parent suffix x y z free_axis lower upper">
+    <joint name="${suffix}_joint" type="prismatic">
+      <parent link="${parent}"/>
+      <child  link="${suffix}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+      <xacro:if value="${free_axis=='x'}">
+        <axis xyz="1 0 0"/>
+      </xacro:if>
+      <xacro:if value="${free_axis=='y'}">
+        <axis xyz="0 1 0"/>
+      </xacro:if>
+      <xacro:if value="${free_axis=='z'}">
+        <axis xyz="0 0 1"/>
+      </xacro:if>
+      <limit lower="${lower}" upper="${upper}" effort="10000" velocity="1000" />
+      <dynamics damping="0"/>
+    </joint>
+    <!-- <xacro:INSERT_TRANSMISSION_UNIT_POSITION suffix="${suffix}" /> -->
+    <xacro:INSERT_TRANSMISSION_UNIT_VELOCITY suffix="${suffix}" />
+  </xacro:macro>  
+
+<!-- 
+  メカナムバレルの回転ジョイントを設定するマクロ
+　現在エフォートと速度は無制限に設定されていて
+  機械的な限界を計算して適応させる必要あり
+ -->
+  <xacro:macro name="generate_mechanum_barrel_joint" params="suffix parent x y z r p yaw">
+    <joint name="${suffix}_joint" type="continuous">
+      <parent link="${parent}"/>
+      <child  link="${suffix}"/>
+      <origin xyz="${x} ${y} ${z}" rpy="${r} ${p} ${yaw}"/>
+      <axis xyz="1 0 0"/>
+      <!-- <dynamics damping="1e-4"/> -->
+      <!-- <limit effort="10000" velocity="10000"/> -->
+      <!-- <safety_controller k_velocity="10" k_position="15" soft_lower_limit="-2.0" soft_upper_limit="0.5" /> -->
+      <!-- <safety_controller k_velocity="10" k_position="15" /> -->
+      <!-- <dynamics friction="10"/> -->
+    </joint>
+    <xacro:INSERT_TRANSMISSION_UNIT_EFFORT suffix="${suffix}" />
+  </xacro:macro> 
+
+<!-- 
+  ガゼボに登録するインターフェイスをまとめたユニット
+  現在公式対応しているのはEffortJointInterfaceのみだからすべて使い回す
+  コントローラーの名前に対応させるジョイント名は　${suffix}_joint
+ -->
+  <xacro:macro name="INSERT_TRANSMISSION_UNIT_EFFORT" params="suffix">
+    <transmission name="${suffix}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${suffix}_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${suffix}_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanismReduction>1</mechanismReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro> 
+
+  <xacro:macro name="INSERT_TRANSMISSION_UNIT_POSITION" params="suffix">
+    <transmission name="${suffix}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${suffix}_joint">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${suffix}_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanismReduction>1</mechanismReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro> 
+
+  <xacro:macro name="INSERT_TRANSMISSION_UNIT_VELOCITY" params="suffix">
+    <transmission name="${suffix}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${suffix}_joint">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${suffix}_motor">
+        <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        <mechanismReduction>1</mechanismReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro> 
+
+  <xacro:macro name="camera_macro" params="parent prefix xyz">
+    <joint name="${prefix}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child  link="${prefix}_link"/>
+      <origin xyz="${xyz}" rpy="0 0 ${radians(90)}"/>
+      <!-- <origin xyz="${xyz}" rpy="0 0 0"/> -->
+    </joint>
+    <link name="${prefix}_link">
+      <visual>
+        <geometry>
+          <box size="0.03 0.05 0.05"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <material name="red"/>
+      </visual>
+    </link>
+    <gazebo reference="${prefix}_link">
+      <sensor type="camera" name="${prefix}">
+        <update_rate>60.0</update_rate>
+        <camera name="${prefix}">
+          <!-- <pose>0 0 0 0 ${radians(-90)} ${radians(90)}</pose> -->
+          <pose>0 0 0 0 ${radians(45)} 0 </pose>
+          <horizontal_fov>1.36135</horizontal_fov>
+          <visualize>true</visualize>
+          <image>
+            <width>1280</width>
+            <height>720</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.02</near>
+            <far>300</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+          <alwaysOn>true</alwaysOn>
+          <updateRate>0.0</updateRate>
+          <cameraName>${prefix}</cameraName>
+          <imageTopicName>image_raw</imageTopicName>
+          <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+          <frameName>${prefix}_link</frameName>
+          <hackBaseline>0.0</hackBaseline>
+          <distortionK1>0.0</distortionK1>
+          <distortionK2>0.0</distortionK2>
+          <distortionK3>0.0</distortionK3>
+          <distortionT1>0.0</distortionT1>
+          <distortionT2>0.0</distortionT2>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:macro name="laser_macro" params="parent prefix xyz rpy">
+    <joint name="${prefix}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child  link="${prefix}_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+    <link name="${prefix}_link">
+      <!-- <visual>
+        <origin xyz="0 0 0.03" rpy="0 0 0" />
+        <geometry>
+          <cylinder radius="0.02" length="0.03" />
+        </geometry>
+        <material name="red" />
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.02" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.02" length="0.03" />
+        </geometry>
+      </collision> -->
+    </link>
+    <gazebo reference="${prefix}_link">
+      <material>Gazebo/Red</material>
+      <sensor type="ray" name="${prefix}">
+        <pose>0 0 0 0 0 0</pose>
+        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <ray>
+          <scan>
+            <horizontal>
+              <samples>400</samples>
+              <resolution>1</resolution>
+              <min_angle>${radians(-120)}</min_angle>
+              <max_angle>${radians( 120)}</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.05</min>
+            <max>5.6</max>
+            <resolution>0.01</resolution>
+          </range>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.01</stddev>
+          </noise>
+        </ray>
+        <plugin name="gazebo_ros_lidar_controller" filename="libgazebo_ros_laser.so">
+          <topicName>/${prefix}_link/scan</topicName>
+          <frameName>${prefix}_link</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro> 
+
+</robot>

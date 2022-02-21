@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- usb_acmノードを実行する -->
+    <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+        <!-- カメラの指定　defaultは/dev/video0 -->
+        <param name="video_device" value="/dev/video2"/>
+        <!-- 画像の大きさ（横幅）の指定 -->
+        <param name="image_width" value="1280"/>
+        <!-- 画像の大きさ（縦幅）の指定 -->
+        <param name="image_height" value="720"/>
+        <!-- 画像フォーマット設定　"mjpeg" or "yuyv" or "uyvy" -->
+        <param name="pixel_format" value="mjpeg"/>
+        <!-- fpsの指定　frame per second -->
+        <param name="framerate" value="30"/>
+        <!-- コントラストの設定（色設１） -->
+        <param name="contrast" value="128"/>
+        <!-- 明るさの設定（色設２） -->
+        <param name="brightness" value="128"/>
+        <!-- 彩度の設定（色設３） -->
+        <param name="saturation" value="128"/>
+        <!-- 自動フォーカス機能の設定　ブール値 -->
+        <param name="autofocus" value="true"/>
+        <!-- フォーカス位置の設定 -->
+        <!-- <param name="focus" value="51"/> -->
+    </node>
+</launch>

@@ -1,0 +1,30 @@
+<!-- http://wiki.ros.org/xacro -->
+<robot name="commissioning_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find commissioning_robot)/xacro/mechanum_macro_h.xacro" />
+  <link name="base_link"/>
+
+  <xacro:generate_link suffix="drive_base_link" roll="0" yaw="${PI}" color="red" stl="package://commissioning_robot/stl_ver4/robot-all.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1}"/>
+      <inertia ixx="${0.1}" ixy="${0}" ixz="${0}"
+       iyx="${0}" iyy="${0.1}" iyz="${0}"
+       izx="${0}" izy="${0}" izz="${0.1}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="drive_base_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${0.01}" df="${0}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link>
+
+<!-- definition of joints -->
+  <!-- robot base Joints -->
+  <joint name="drive_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="drive_base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <xacro:laser_macro parent="drive_base_link" prefix="hokuyo_lrf1" xyz="0 0.3656 ${0.0777-0.055}" rpy="${radians(180)} 0 ${radians(90)}"/>
+  <xacro:laser_macro parent="drive_base_link" prefix="hokuyo_lrf2" xyz="0 -0.130 ${0.1412-0.055}" rpy="${radians(180)} 0 ${radians(-90)}" />
+
+</robot>

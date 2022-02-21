@@ -1,0 +1,68 @@
+commissioning_robot:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 1000 
+
+  # Position Controllers ---------------------------------------
+  lift1_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: lift1_link_joint
+    publish_rate: 1000 
+  lift2_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: lift2_link_joint
+    publish_rate: 1000 
+  lift3_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: lift3_link_joint
+    publish_rate: 1000 
+  lift4_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: lift4_link_joint
+    publish_rate: 1000 
+  wheel1_velocity_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum1_link_joint
+    publish_rate: 1000 
+  wheel2_velocity_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum2_link_joint
+    publish_rate: 1000 
+  wheel3_velocity_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum3_link_joint
+    publish_rate: 1000 
+  wheel4_velocity_controller:
+    pid: {p: 0.2, i: 0, d: 0}
+    type: velocity_controllers/JointVelocityController
+    joint: mechanum4_link_joint
+    publish_rate: 1000 
+  bottom_unit_link_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: bottom_unit_link_joint
+    publish_rate: 1000 
+  second_unit_link_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: second_unit_link_joint
+    publish_rate: 1000 
+  third_unit_link_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: third_unit_link_joint
+    publish_rate: 1000 
+  top_unit_link_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: top_unit_link_joint
+    publish_rate: 1000 
+
+  arm_unit_y_link_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: arm_unit_y_link_joint
+    publish_rate: 1000
+  arm_unit_x_link_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: arm_unit_x_link_joint
+    publish_rate: 1000

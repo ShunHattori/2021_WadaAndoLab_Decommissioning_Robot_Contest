@@ -1,0 +1,60 @@
+<launch>
+  <!-- 時間周りがずれていて実際とGAZEBOを共存させるのは難しそう？ -->
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <!-- <arg name="world_name" value="$(find rrbot_gazebo)/worlds/rrbot.world"/> -->
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+    <arg name="world_name" value="main_world.world" />
+  </include>
+
+  <!-- Load the URDF into the ROS Parameter Server -->
+  <arg name="model" default="$(find commissioning_robot)/xacro/robot.xacro"/>   
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find commissioning_robot)/config/control.yaml" command="load"/>
+
+  <!-- launch gazebo_ros joint controllers -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" ns="/commissioning_robot" 
+    args="joint_state_controller
+     lift1_position_controller lift2_position_controller lift3_position_controller lift4_position_controller
+     wheel1_position_controller wheel2_position_controller wheel3_position_controller wheel4_position_controller
+     bottom_unit_link_position_controller second_unit_link_position_controller third_unit_link_position_controller top_unit_link_position_controller"/>
+
+  <!-- convert joint states to TF transforms for rviz -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+    respawn="false" output="screen">
+    <remap from="/joint_states" to="/commissioning_robot/joint_states" />
+  </node>
+  
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf -model comrob -param robot_description"/>
+
+
+  <!-- launching user nodes -->
+  <node pkg="joy" name="Joy_Interface" type="joy_node"/>
+  <node pkg="commissioning_robot" name="Drive_InverseKinematics" type="DriveInverseKinematics_node"/>
+  <node pkg="commissioning_robot" name="Robot_Core" type="gazebo_publisher" />
+  <node pkg="commissioning_robot" name="Sim_Interface" type="sim_interface" />
+  <node pkg="commissioning_robot" name="Can_Bridge" type="can_bridge" output="screen"/>
+
+  <node name="Serial_Node"        pkg="rosserial_python"      type="serial_node.py" output="screen">
+  <param name="port"              type="string"               value="/dev/ttyACM0"/>
+  <param name="baud"              type="int"                  value="115200"/>
+  <param name="auto_reset_timeout"  type="int"  value="1"/>
+  </node>
+
+</launch>

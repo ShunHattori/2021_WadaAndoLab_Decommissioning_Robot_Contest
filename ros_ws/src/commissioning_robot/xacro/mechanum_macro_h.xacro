@@ -1,0 +1,101 @@
+<!-- http://wiki.ros.org/xacro -->
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find commissioning_robot)/xacro/color_preset_h.xacro" />
+  <xacro:include filename="$(find commissioning_robot)/xacro/generate_macro_h.xacro" />
+  <xacro:property name="PI" value="3.1415926535897931" />
+
+<!-- 
+  メカナムのバレルのリンクデータ・ジョイント設定を生成する
+  パラメータwhich_sideにより左右のバレル取り付け角度の計算式を切り替えている
+  rollにスラスト方向から見たバレル原点の軸中心からの角度を指定
+ -->
+  <xacro:macro name="generate_mechanum_barrel" params="parent suffix roll which_side">
+    <xacro:generate_link suffix="${suffix}" roll="0" yaw="${0}" color="blue"  stl="package://commissioning_robot/stl/ots-barrel-display_s.stl" >
+      <inertial_UNIT>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${2.0168905e-02}"/>
+        <inertia ixx="${9.1158740e-7}" ixy="${0.0e-00}" ixz="${0.0e-00}"
+         iyx="${0.0e-00}" iyy="${3.5976895e-6}" iyz="${0.0e-00}"
+         izx="${0.0e-00}" izy="${0.0e-00}" izz="${3.5976895e-6}" />
+      </inertial_UNIT>
+      <physics_UNIT>
+        <!-- <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="${suffix}" mu1="${1}" mu2="${1}" kp="${2e8}" kd="${0.1}" df="${0.03}" color="Gazebo/GreyGradientSky"/> -->
+        <!-- <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="${suffix}" mu1="${1}" mu2="${1}" kp="${1}" kd="${1}" df="${0}" color="Gazebo/GreyGradientSky"/> -->
+        <gazebo reference="${suffix}">
+          <material>Gazebo/GreyGradientSky</material>
+          <dampingFactor>0.01</dampingFactor>
+        </gazebo>
+      </physics_UNIT>
+    </xacro:generate_link>
+
+    <xacro:if value="${which_side=='right'}">
+      <xacro:generate_mechanum_barrel_joint suffix="${suffix}" parent="${parent}"
+       x="${0}" y="${0.04029*cos(roll*PI/180.0)}" z="${0.04029*sin(roll*PI/180.0)}"
+       r="${roll*PI/180.0}" p="${PI/4.0*cos(roll*PI/180.0)}" yaw="${PI/4.0*sin(roll*PI/180.0)}" />
+    </xacro:if>
+    <xacro:if value="${which_side=='left'}">
+      <xacro:generate_mechanum_barrel_joint suffix="${suffix}" parent="${parent}"
+       x="${0}" y="${0.04029*cos(roll*PI/180.0)}" z="${0.04029*sin(roll*PI/180.0)}"
+       r="${roll*PI/180.0}" p="${-PI/4.0*cos(roll*PI/180.0)}" yaw="${-PI/4.0*sin(roll*PI/180.0)}" />
+    </xacro:if>
+  </xacro:macro>
+
+<!-- 
+  左のメカナムの設定を使用してメカナムオブジェクトを生成する
+  ・ホイールベース1個・バレル9個のリンクとジョイントを生成
+ -->
+  <xacro:macro name="generate_left_mechanum" params="suffix roll yaw">
+    <xacro:generate_link_non_collision suffix="${suffix}" roll="${roll}" yaw="${yaw}" color="blue"  stl="package://commissioning_robot/stl/03-asm-mechanum-l.stl" >
+      <inertial_UNIT>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${2.2831430e-01}"/>
+        <inertia ixx="${1.3964271e-4}" ixy="-2.4376656e-7" ixz="${-4.0742095e-8}"
+         iyx="${-2.4376656e-7}" iyy="${1.4237359e-4}" iyz="${1.5005847e-8}"
+         izx="${-4.0742095e-8}" izy="${1.5005847e-8}" izz="${1.4228689e-4}" />
+      </inertial_UNIT>
+      <physics_UNIT>
+        <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="${suffix}" mu1="${1}" mu2="${1}" kp="${2e10}" kd="${0.01}" df="${0.01}" color="Gazebo/Grey"/>
+      </physics_UNIT>
+    </xacro:generate_link_non_collision>
+
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel1"  roll="${0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel2"  roll="${40.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel3"  roll="${80.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel4"  roll="${120.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel5"  roll="${160.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel6"  roll="${200.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel7"  roll="${240.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel8"  roll="${280.0}" which_side="left" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel9"  roll="${320.0}" which_side="left" />
+  </xacro:macro>
+
+<!-- 
+  右のメカナムの設定を使用してメカナムオブジェクトを生成する
+  ・ホイールベース1個・バレル9個のリンクとジョイントを生成
+ -->
+  <xacro:macro name="generate_right_mechanum" params="suffix roll yaw">
+    <xacro:generate_link_non_collision suffix="${suffix}" roll="${roll}" yaw="${yaw}" color="blue"  stl="package://commissioning_robot/stl/03-asm-mechanum-r.stl" >
+      <inertial_UNIT>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <mass value="${2.2831430e-01}"/>
+        <inertia ixx="${1.3964271e-4}" ixy="${3.4107230e-7}" ixz="${-4.0592855e-8}"
+         iyx="${3.4107230e-7}" iyy="${1.4237371e-4}" iyz="${-1.5000035e-8}"
+         izx="${-4.0592855e-8}" izy="${1.5000035e-8}" izz="${1.4228702e-4}" />
+      </inertial_UNIT>
+      <physics_UNIT>
+        <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="${suffix}" mu1="${1}" mu2="${1}" kp="${2e10}" kd="${0.01}" df="${0.01}" color="Gazebo/Grey"/>
+      </physics_UNIT>
+    </xacro:generate_link_non_collision>
+
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel1"  roll="${0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel2"  roll="${40.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel3"  roll="${80.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel4"  roll="${120.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel5"  roll="${160.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel6"  roll="${200.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel7"  roll="${240.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel8"  roll="${280.0}" which_side="right" />
+    <xacro:generate_mechanum_barrel parent="${suffix}" suffix="${suffix}_barrel9"  roll="${320.0}" which_side="right" />
+  </xacro:macro>
+
+</robot>

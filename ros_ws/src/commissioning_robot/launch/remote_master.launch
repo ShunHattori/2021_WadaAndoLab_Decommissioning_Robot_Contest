@@ -1,0 +1,45 @@
+<launch>
+
+  <!-- CAN基板データ変換ノードを起動 -->
+  <node pkg="commissioning_robot" name="Can_Bridge" type="can_bridge" required="true"/>
+  <!-- CAN周り記述終了 -->
+
+
+  <!-- ロボット可視化周りの設定・起動 -->
+  <!-- RVIZ系の設定 -->
+  <arg name="rvizconfig" default="$(find commissioning_robot)/config/real_SETTING.rviz" />
+  <!-- <arg name="model" default="$(find commissioning_robot)/xacro/robot.xacro"/> -->
+  <arg name="model" default="$(find commissioning_robot)/xacro/robot_full_view.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+
+  <!-- RVIZ 用にJOINT STATEを発行するノード -->
+  <node pkg="robot_state_publisher" name="robot_state_publisher" type="robot_state_publisher" />
+  <node pkg="commissioning_robot" name="ROBOT_TF_NODE" type="robot_tf_publisher"/>
+
+  <!-- RVIZ JSK PLUGIN用に加工したデータを発行するノード-->
+  <node pkg="commissioning_robot" name="rviz_jsk" type="rviz_jsk.py" />
+
+  <!-- RVIZ本体を起動 -->
+  <node pkg="rviz" name="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+
+  <!-- カメラ用RQTを起動（Perspectiveはcomrbo_realを選択すること） -->
+  <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
+  <!--　ロボット可視化周り記述終了-->
+
+
+  <!-- DUALSHOCK4コントローラ通信用ノード -->
+  <node pkg="ds4_driver" name="ds4_Interface" type="ds4_driver_node.py"/>
+  <!-- コントローラ周り記述終了 -->
+
+  <!-- ロボットメイン処理ノードの起動 -->
+  <node pkg="commissioning_robot" name="ROBOT_CORE" type="robot_core" required="true"/>  
+  <node pkg="commissioning_robot" name="drive_inverse_kinematics" type="drive_inverse_kinematics"/>
+  <node pkg="commissioning_robot" name="drive_wheel_controller" type="drive_wheel_controller"/>
+  <node pkg="commissioning_robot" name="drive_lift_controller" type="drive_lift_controller"/>
+  <node pkg="commissioning_robot" name="main_lift_controller" type="main_lift_controller"/>
+  <node pkg="commissioning_robot" name="arm_controller" type="arm_controller"/>
+  <node pkg="commissioning_robot" name="cable_manager_controller" type="cable_manager_controller"/>
+  <node pkg="commissioning_robot" name="pose_controller" type="pose_controller"/>
+  <!-- メインノード記述終了 -->
+
+</launch>

@@ -1,0 +1,15 @@
+\subsubsection usage Usage
+\verbatim
+<node name="commissioning_robot" pkg="commissioning_robot" type="commissioning_robot">
+  <param name="roll_p" type="double" value="0.002" />
+  <param name="roll_i" type="double" value="1e-06" />
+  <param name="roll_d" type="double" value="0.0" />
+  <param name="pitch_p" type="double" value="0.002" />
+  <param name="pitch_i" type="double" value="1e-06" />
+  <param name="pitch_d" type="double" value="0.0" />
+  <param name="robot_vel_x" type="double" value="0.5" />
+  <param name="robot_vel_y" type="double" value="0.5" />
+  <param name="robot_vel_z" type="double" value="0.5" />
+</node>
+\endverbatim
+

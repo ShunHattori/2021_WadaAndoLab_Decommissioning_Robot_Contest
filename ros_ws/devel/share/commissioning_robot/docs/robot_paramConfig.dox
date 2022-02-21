@@ -1,0 +1,14 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~roll_p" : \b [double] A double parameter min: -0.01, default: 0.002, max: 0.01
+- \b "~roll_i" : \b [double] A double parameter min: -1e-05, default: 1e-06, max: 1e-05
+- \b "~roll_d" : \b [double] A double parameter min: -0.01, default: 0.0, max: 0.01
+- \b "~pitch_p" : \b [double] A double parameter min: -0.01, default: 0.002, max: 0.01
+- \b "~pitch_i" : \b [double] A double parameter min: -1e-05, default: 1e-06, max: 1e-05
+- \b "~pitch_d" : \b [double] A double parameter min: -0.01, default: 0.0, max: 0.01
+- \b "~robot_vel_x" : \b [double] A double parameter min: 0.0, default: 0.5, max: 1.0
+- \b "~robot_vel_y" : \b [double] A double parameter min: 0.0, default: 0.5, max: 1.0
+- \b "~robot_vel_z" : \b [double] A double parameter min: 0.0, default: 0.5, max: 1.0
+

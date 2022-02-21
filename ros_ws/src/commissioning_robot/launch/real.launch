@@ -1,0 +1,86 @@
+<launch>
+
+  <!-- CAN基板との通信ノードを起動 -->
+  <!-- ROSPARAMで使用する通信ポートを指定できるようにした -->
+  <node name="roscan_node" pkg="myserial_py" type="roscan.py" output="screen">
+    <param name="port_name" value="/dev/ttyUSB0"/>
+  </node>
+  <node pkg="commissioning_robot" name="Can_Bridge" type="can_bridge"/>
+  <!-- CAN周り記述終了 -->
+
+
+  <!-- ロボット可視化周りの設定・起動 -->
+  <!-- RVIZ系の設定 -->
+  <arg name="rvizconfig" default="$(find commissioning_robot)/config/real_SETTING.rviz" />
+  <arg name="model" default="$(find commissioning_robot)/xacro/robot.xacro"/>
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)" />
+
+  <!-- RVIZ 用にJOINT STATEを発行するノード -->
+  <node pkg="robot_state_publisher" name="robot_state_publisher" type="robot_state_publisher" />
+  <node pkg="commissioning_robot" name="ROBOT_TF_NODE" type="robot_tf_publisher"/>
+
+  <!-- RVIZ JSK PLUGIN用に加工したデータを発行するノード-->
+  <node pkg="commissioning_robot" name="rviz_jsk" type="rviz_jsk.py"/>
+
+  <!-- RVIZ本体を起動 -->
+  <node pkg="rviz" name="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" />
+  <!--　ロボット可視化周り記述終了-->
+
+
+  <!-- DUALSHOCK4コントローラ通信用ノード -->
+  <node pkg="ds4_driver" name="ds4_Interface" type="ds4_driver_node.py"/>
+  <!-- コントローラ周り記述終了 -->
+
+  <!-- ロボットメイン処理ノードの起動 -->
+  <node pkg="commissioning_robot" name="ROBOT_CORE" type="robot_core" output="screen"/>  
+  <node pkg="commissioning_robot" name="drive_inverse_kinematics" type="drive_inverse_kinematics"/>
+  <node pkg="commissioning_robot" name="drive_wheel_controller" type="drive_wheel_controller"/>
+  <node pkg="commissioning_robot" name="drive_lift_controller" type="drive_lift_controller"/>
+  <node pkg="commissioning_robot" name="main_lift_controller" type="main_lift_controller" />
+  <node pkg="commissioning_robot" name="arm_controller" type="arm_controller"/>
+  <node pkg="commissioning_robot" name="cable_manager_controller" type="cable_manager_controller"/>
+  <node pkg="commissioning_robot" name="pose_controller" type="pose_controller"/>
+  <node pkg="commissioning_robot" name="gazebo_publisher" type="gazebo_publisher" />
+  <!-- メインノード記述終了 -->
+  
+  <!-- <node name="HOKUYO_LRF1" pkg="urg_node" type="urg_node" output="screen" ns="/lrf1">
+    <param name="ip_address" value=""/>
+    <param name="serial_port" value="/dev/ttyACM1"/>
+    <param name="serial_baud" value="115200"/>
+    <param name="frame_id" value="hokuyo_lrf1_link"/>
+    <param name="calibrate_time" value="false"/>
+    <param name="publish_intensity" value="false"/>
+    <param name="publish_multiecho" value="false"/>
+    <param name="angle_min" value="-2.0944"/>
+    <param name="angle_max" value="2.0944"/>
+  </node> -->
+  
+  <!-- <node name="HOKUYO_LRF2" pkg="urg_node" type="urg_node" output="screen" ns="/lrf2">
+    <param name="ip_address" value=""/>
+    <param name="serial_port" value="/dev/ttyACM2"/>
+    <param name="serial_baud" value="115200"/>
+    <param name="frame_id" value="hokuyo_lrf2_link"/>
+    <param name="calibrate_time" value="false"/>
+    <param name="publish_intensity" value="false"/>
+    <param name="publish_multiecho" value="false"/>
+    <param name="angle_min" value="-2.0944"/>
+    <param name="angle_max" value="2.0944"/>
+  </node> -->
+
+  <!-- <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="log">
+    <param name="video_device" value="/dev/video2"/>
+    <param name="image_width" value="1280"/>
+    <param name="image_height" value="720"/>
+    <param name="pixel_format" value="mjpeg"/>
+    <param name="framerate" value="30"/>
+    <param name="contrast" value="128"/>
+    <param name="brightness" value="128"/>
+    <param name="saturation" value="128"/>
+    <param name="autofocus" value="true"/>
+  </node> -->
+
+
+  <!-- <arg name="gui" default="true" /> -->
+  <!-- <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" /> -->
+  <!-- <node unless="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /> -->
+</launch>

@@ -1,0 +1,16 @@
+\subsubsection parameters ROS parameters
+
+Reads and maintains the following parameters on the ROS server
+
+- \b "~DW1_port" : \b [int]  min: 0, default: 0, max: 11
+- \b "~DW2_port" : \b [int]  min: 0, default: 1, max: 11
+- \b "~DW3_port" : \b [int]  min: 0, default: 2, max: 11
+- \b "~DW4_port" : \b [int]  min: 0, default: 3, max: 11
+- \b "~DL1_port" : \b [int]  min: 0, default: 4, max: 11
+- \b "~DL2_port" : \b [int]  min: 0, default: 5, max: 11
+- \b "~DL3_port" : \b [int]  min: 0, default: 6, max: 11
+- \b "~DL4_port" : \b [int]  min: 0, default: 7, max: 11
+- \b "~ML_port" : \b [int]  min: 0, default: 8, max: 11
+- \b "~ARMX_port" : \b [int]  min: 0, default: 9, max: 11
+- \b "~ARMY_port" : \b [int]  min: 0, default: 10, max: 11
+

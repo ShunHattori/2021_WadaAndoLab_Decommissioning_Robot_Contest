@@ -1,0 +1,258 @@
+<!-- http://wiki.ros.org/xacro -->
+<robot name="commissioning_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="$(find commissioning_robot)/xacro/mechanum_macro_h.xacro" />
+  <xacro:property name="PI" value="3.1415926535897931" />
+  <xacro:property name="lift_joint_x" value="0.1795" />
+  <xacro:property name="lift_joint_y" value="0.2080" />
+  <xacro:property name="lift_joint_z" value="0.0100" />
+  <xacro:property name="wheel_joint_x" value="0.0495" />
+  <xacro:property name="wheel_joint_y" value="0.0500" />
+  <xacro:property name="wheel_joint_z" value="0.0720" />
+
+  <link name="base_link"/>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/commissioning_robot</robotNamespace>
+      <!-- <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType> -->
+      <!-- <legacyModeNS>true</legacyModeNS> -->
+    </plugin>
+  </gazebo>
+
+<!-- definition of links -->
+
+  <xacro:generate_link suffix="drive_base_link" roll="0" yaw="${PI}" color="red" stl="package://commissioning_robot/stl/03c-all-base-drive.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${5.7106171}"/>
+      <inertia ixx="${3.7539268e-1}" ixy="${0.0e-0}" ixz="${-4.6023460e-4}"
+       iyx="${0.0e-0}" iyy="${5.4083174e-1}" iyz="${-5.0803986e-5}"
+       izx="${-4.6023460e-4}" izy="${-5.0803986e-5}" izz="${1.7633812e-1}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="drive_base_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${0.01}" df="${0}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link>
+
+  <xacro:generate_link_non_collision suffix="lift1_link" roll="0" yaw="${-PI/2}" color="blue"  stl="package://commissioning_robot/stl/asm-03c-ud-drive-unit2.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1.1426868}"/>
+      <inertia ixx="${2.8638897e-2}" ixy="${4.1858462e-4}" ixz="${6.3414972e-4}"
+       iyx="${4.1858462e-4}" iyy="${7.2862805e-3}" iyz="${2.4968875e-3}"
+       izx="${6.3414972e-4}" izy="${2.4968875e-3}" izz="${2.7182379e-2}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="lift1_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${0.01}" df="${0.01}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+
+  <xacro:generate_link_non_collision suffix="lift2_link" roll="0" yaw="${-PI/2}" color="blue"  stl="package://commissioning_robot/stl/asm-03c-ud-drive-unit1.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1.1440346}"/>
+      <inertia ixx="${2.8643666e-2}" ixy="${4.1966804e-4}" ixz="${-6.3324236e-4}"
+       iyx="${4.1966804e-4}" iyy="${7.2885831e-3}" iyz="${-2.4972389e-3}"
+       izx="${-6.3324236e-4}" izy="${-2.4972389e-3}" izz="${2.7186401e-2}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="lift2_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${0.01}" df="${0.01}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+
+  <xacro:generate_link_non_collision suffix="lift3_link" roll="0" yaw="${PI/2}"  color="blue"  stl="package://commissioning_robot/stl/asm-03c-ud-drive-unit2.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1.1426868}"/>
+      <inertia ixx="${2.8638897e-2}" ixy="${4.1858462e-4}" ixz="${6.3414972e-4}"
+       iyx="${4.1858462e-4}" iyy="${7.2862805e-3}" iyz="${2.4968875e-3}"
+       izx="${6.3414972e-4}" izy="${2.4968875e-3}" izz="${2.7182379e-2}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="lift3_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${0.01}" df="${0.01}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+
+  <xacro:generate_link_non_collision suffix="lift4_link" roll="0" yaw="${PI/2}"  color="blue"  stl="package://commissioning_robot/stl/asm-03c-ud-drive-unit1.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1.1440346}"/>
+      <inertia ixx="${2.8643666e-2}" ixy="${4.1966804e-4}" ixz="${-6.3324236e-4}"
+       iyx="${4.1966804e-4}" iyy="${7.2885831e-3}" iyz="${-2.4972389e-3}"
+       izx="${-6.3324236e-4}" izy="${-2.4972389e-3}" izz="${2.7186401e-2}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="lift4_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${0.01}" df="${0.01}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+
+  <xacro:generate_right_mechanum suffix="mechanum1_link" roll="${20*PI/180}" yaw="${PI}" />
+  <xacro:generate_left_mechanum suffix="mechanum2_link" roll="0" yaw="${0}" />
+  <xacro:generate_right_mechanum suffix="mechanum3_link" roll="0" yaw="${0}" />
+  <xacro:generate_left_mechanum suffix="mechanum4_link" roll="${20*PI/180}" yaw="${PI}" />
+
+<!-- definition of joints -->
+  <!-- robot base Joints -->
+  <joint name="drive_base_joint" type="fixed">
+    <parent link="base_link"/>
+    <child  link="drive_base_link"/>
+    <origin xyz="0 0 0.15" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Lift Joints -->
+  <!-- Dist between drive_base_joint and each lift_joint -0.334 0.05-->
+  <xacro:generate_lift_joint parent="drive_base_link" suffix="lift1_link" x=" ${lift_joint_x}" y=" ${lift_joint_y}" z="${lift_joint_z}" free_axis="z" lower="-1" upper="1" />
+  <xacro:generate_lift_joint parent="drive_base_link" suffix="lift2_link" x="-${lift_joint_x}" y=" ${lift_joint_y}" z="${lift_joint_z}" free_axis="z" lower="-1" upper="1" />
+  <xacro:generate_lift_joint parent="drive_base_link" suffix="lift3_link" x="-${lift_joint_x}" y="-${lift_joint_y}" z="${lift_joint_z}" free_axis="z" lower="-1" upper="1" />
+  <xacro:generate_lift_joint parent="drive_base_link" suffix="lift4_link" x=" ${lift_joint_x}" y="-${lift_joint_y}" z="${lift_joint_z}" free_axis="z" lower="-1" upper="1" />
+
+  <!-- Wheel Joints -->
+  <!-- Dist between each lift_joint and wheel_joint -->
+  <xacro:generate_mechanum_joint suffix="mechanum1_link" parent="lift1_link" x=" ${wheel_joint_x}" y=" ${wheel_joint_y}" z="-${wheel_joint_z}" />
+  <xacro:generate_mechanum_joint suffix="mechanum2_link" parent="lift2_link" x="-${wheel_joint_x}" y=" ${wheel_joint_y}" z="-${wheel_joint_z}" />
+  <xacro:generate_mechanum_joint suffix="mechanum3_link" parent="lift3_link" x="-${wheel_joint_x}" y="-${wheel_joint_y}" z="-${wheel_joint_z}" />
+  <xacro:generate_mechanum_joint suffix="mechanum4_link" parent="lift4_link" x=" ${wheel_joint_x}" y="-${wheel_joint_y}" z="-${wheel_joint_z}" />
+
+
+<!-- main lift link definition begin -->
+  <xacro:generate_link_non_collision suffix="bottom_unit_link" roll="0" yaw="${0}" color="red" stl="package://commissioning_robot/stl/asm-01d-under-base-frame.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1.9642335}"/>
+      <inertia ixx="${7.6251439e-1}" ixy="${-8.2944557e-6}" ixz="${-1.5541185e-7}"
+       iyx="${-8.2944557e-6}" iyy="${1.4257043e-2}" iyz="${-2.8067188e-3}"
+       izx="${-1.5541185e-7}" izy="${-2.8067188e-3}" izz="${7.7600924e-1}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="bottom_unit_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${1}" df="${0}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+  <xacro:generate_link_non_collision suffix="second_unit_link" roll="0" yaw="${0}" color="blue" stl="package://commissioning_robot/stl/asm-01d-second-unit.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${2.3949235}"/>
+      <inertia ixx="${5.9758707e-1}" ixy="${2.0671151e-4}" ixz="${-2.2286795e-3}"
+       iyx="${2.0671151e-4}" iyy="${4.1532923e-2}" iyz="${7.0790695e-2}"
+       izx="${-2.2286795e-3}" izy="${7.0790695e-2}" izz="${6.1126766e-1}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="second_unit_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${1}" df="${0}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+  <xacro:generate_link_non_collision suffix="third_unit_link" roll="0" yaw="${0}" color="green" stl="package://commissioning_robot/stl/asm-01d-third-frame-unit.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${1.6890962}"/>
+      <inertia ixx="${1.4556756e-1}" ixy="${-7.7964393e-6}" ixz="${1.9048102e-8}"
+       iyx="${-7.7964393e-6}" iyy="${1.9584212e-2}" iyz="${5.4267813e-3}"
+       izx="${1.9048102e-8}" izy="${5.4267813e-3}" izz="${1.6329335e-1}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="third_unit_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${1}" df="${0}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+  <xacro:generate_link_non_collision suffix="top_unit_link" roll="0" yaw="${PI}" color="red" stl="package://commissioning_robot/stl/asm-01d-top-base-d-frame-unit.stl">
+    <inertial_UNIT>
+      <origin xyz="0 0 0" rpy="${PI/2} 0 0"/>
+      <mass value="${2.6947909}"/>
+      <inertia ixx="${2.5680669e-1}" ixy="${7.1440461e-3}" ixz="${-1.7514047e-4}"
+       iyx="${7.1440461e-3}" iyy="${9.1141640e-3}" iyz="${1.2020167e-3}"
+       izx="${-1.7514047e-4}" izy="${1.2020167e-3}" izz="${2.6338954e-1}" />
+    </inertial_UNIT>
+    <physics_param>
+       <xacro:INSERT_GAZEBO_PHYSICS_UNIT  suffix="top_unit_link" mu1="${0}" mu2="${0}" kp="${1e13}" kd="${1}" df="${0}" color="Gazebo/Grey"/>
+    </physics_param>
+  </xacro:generate_link_non_collision>
+<!-- main lift link definition end -->
+
+
+<!-- main lift joint definition begin -->
+  <xacro:generate_lift_joint parent="drive_base_link" suffix="bottom_unit_link" x=" ${0}" y=" ${0.060}" z="${0.030}" free_axis="z" lower="0" upper="0" />
+  <xacro:generate_lift_joint parent="bottom_unit_link" suffix="second_unit_link" x=" ${0}" y=" -${0.0181}" z="${0.060}" free_axis="z" lower="0" upper="0.680" />
+  <xacro:generate_lift_joint parent="second_unit_link" suffix="third_unit_link" x=" ${0}" y=" ${0.1231}" z="${0.445}" free_axis="z" lower="0" upper="0.680" />
+  <xacro:generate_lift_joint parent="third_unit_link" suffix="top_unit_link" x=" ${0}" y=" ${0.058}" z="${0.030}" free_axis="z" lower="0" upper="0.680" />
+
+<!-- main lift joint definition end -->
+
+  <!-- <xacro:camera_macro parent="drive_base_link" prefix="front_camera" xyz="0 0.3 0.05" /> -->
+  <xacro:camera_macro parent="drive_base_link" prefix="front_camera1" xyz="0 0.2 0.05" />
+  <xacro:camera_macro parent="drive_base_link" prefix="front_camera2" xyz="0 -0.1 0.1" />
+  <xacro:laser_macro parent="drive_base_link" prefix="hokuyo_lrf" xyz="0 0.3 -0.07" />
+
+<!-- libgazebo_ros_p3d test works very well -->
+   <gazebo>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>world</frameName>
+      <bodyName>drive_base_link</bodyName>
+      <topicName>/pose_ground_truth</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>lift1_link</frameName>
+      <bodyName>mechanum1_link</bodyName>
+      <topicName>/p3d_wheel1_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>lift2_link</frameName>
+      <bodyName>mechanum2_link</bodyName>
+      <topicName>/p3d_wheel2_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>lift3_link</frameName>
+      <bodyName>mechanum3_link</bodyName>
+      <topicName>/p3d_wheel3_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>lift4_link</frameName>
+      <bodyName>mechanum4_link</bodyName>
+      <topicName>/p3d_wheel4_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>drive_base_link</frameName>
+      <bodyName>lift1_link</bodyName>
+      <topicName>/p3d_drive_lift1_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>drive_base_link</frameName>
+      <bodyName>lift2_link</bodyName>
+      <topicName>/p3d_drive_lift2_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>drive_base_link</frameName>
+      <bodyName>lift3_link</bodyName>
+      <topicName>/p3d_drive_lift3_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>drive_base_link</frameName>
+      <bodyName>lift4_link</bodyName>
+      <topicName>/p3d_drive_lift4_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+
+    <plugin name="p3d_base_controller" filename="libgazebo_ros_p3d.so">
+      <updateRate>100.0</updateRate>
+      <frameName>bottom_unit_link</frameName>
+      <bodyName>second_unit_link</bodyName>
+      <topicName>/p3d_main_lift_pose</topicName>
+      <gaussianNoise>0</gaussianNoise>
+    </plugin>
+  </gazebo>
+</robot>

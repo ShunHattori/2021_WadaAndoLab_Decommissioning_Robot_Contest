@@ -1,0 +1,17 @@
+\subsubsection usage Usage
+\verbatim
+<node name="commissioning_robot" pkg="commissioning_robot" type="commissioning_robot">
+  <param name="DL1_Bottom" type="int" value="0" />
+  <param name="DL1_top" type="int" value="1" />
+  <param name="DL2_Bottom" type="int" value="2" />
+  <param name="DL2_top" type="int" value="3" />
+  <param name="DL3_Bottom" type="int" value="4" />
+  <param name="DL3_top" type="int" value="5" />
+  <param name="DL4_Bottom" type="int" value="6" />
+  <param name="DL4_top" type="int" value="7" />
+  <param name="ML_Bottom" type="int" value="8" />
+  <param name="ARMX_Bottom" type="int" value="9" />
+  <param name="ARMY_Bottom" type="int" value="10" />
+</node>
+\endverbatim
+

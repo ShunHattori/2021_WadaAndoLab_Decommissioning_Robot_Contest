@@ -1,0 +1,17 @@
+\subsubsection usage Usage
+\verbatim
+<node name="commissioning_robot" pkg="commissioning_robot" type="commissioning_robot">
+  <param name="DW1_port" type="int" value="0" />
+  <param name="DW2_port" type="int" value="1" />
+  <param name="DW3_port" type="int" value="2" />
+  <param name="DW4_port" type="int" value="3" />
+  <param name="DL1_port" type="int" value="4" />
+  <param name="DL2_port" type="int" value="5" />
+  <param name="DL3_port" type="int" value="6" />
+  <param name="DL4_port" type="int" value="7" />
+  <param name="ML_port" type="int" value="8" />
+  <param name="ARMX_port" type="int" value="9" />
+  <param name="ARMY_port" type="int" value="10" />
+</node>
+\endverbatim
+
